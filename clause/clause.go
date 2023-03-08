@@ -11,6 +11,9 @@ const (
 	WHERE
 	LIMIT
 	ORDER
+	UPDATE
+	DELETE
+	COUNT
 )
 
 type Clause struct {

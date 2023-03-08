@@ -28,13 +28,33 @@ func main() {
 	//_ = sql.CreateTable()
 	//logf.Infof("has table %v", sql.HasTable())
 
-	var u1 = model.User{Id: 5, Name: "ZC", Age: 32}
-	res, _ := sql.Insert(&u1)
-	logf.Infof("insert success? %v", res == 1)
+	//var u1 = model.User{Id: 5, Name: "ZC", Age: 32}
+	//res, _ := sql.Insert(&u1)
+	//logf.Infof("insert success? %v", res == 1)
 
 	var us []model.User
 	sql.Find(&us)
 	for _, v := range us {
 		logf.Info(v)
 	}
+
+	var us2 []model.User
+	sql.Limit(1).Find(&us2)
+	logf.Infof("len = %d\n", len(us2))
+	logf.Infof("val = %#v\n", us2[0])
+	//val = model.User{Id:1, Name:"zs", Age:23}
+
+	//updates := make(map[string]any)
+	//updates["age"] = 25
+	//res, err := sql.Where("name = ?", "zs").Update(updates)
+	//if err == nil {
+	//	logf.Info(res == 1)
+	//	var us3 []model.User
+	//	sql.Where("name = ?", "zs").Find(&us3)
+	//	logf.Infof("val = %v\n", us3[0])
+	//}
+
+	sql.Where("name = ? or age = ?", "ws", 31).Delete()
+	num, _ := sql.Count()
+	logf.Infof("data number = %d\n", num)
 }

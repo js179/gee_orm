@@ -7,15 +7,19 @@ import (
 
 type generatorFunc func(values ...any) (string, []any)
 
-var generatorMap = make(map[Type]generatorFunc)
+var generatorMap map[Type]generatorFunc
 
 func init() {
+	generatorMap = make(map[Type]generatorFunc)
 	generatorMap[INSERT] = _insert
 	generatorMap[VALUES] = _values
 	generatorMap[SELECT] = _select
 	generatorMap[WHERE] = _where
 	generatorMap[LIMIT] = _limit
 	generatorMap[ORDER] = _orderBy
+	generatorMap[UPDATE] = _update
+	generatorMap[DELETE] = _delete
+	generatorMap[COUNT] = _count
 }
 
 // 生成 ?, ?, ? 带填充字符串
@@ -114,5 +118,39 @@ func _orderBy(values ...any) (sql string, vars []any) {
 		return
 	}
 	sql = fmt.Sprintf("ORDER BY %s", values[0])
+	return
+}
+
+func _update(values ...any) (sql string, vars []any) {
+	if len(values) != 2 {
+		panic("the update param number must be 2")
+	}
+
+	tableName := values[0]
+	params := values[1].(map[string]any)
+
+	var keys []string
+
+	for key, val := range params {
+		keys = append(keys, key+" = ?")
+		vars = append(vars, val)
+	}
+	sql = fmt.Sprintf("UPDATE %s SET %s", tableName, strings.Join(keys, ", "))
+	return
+}
+
+func _delete(values ...any) (sql string, vars []any) {
+	if len(values) < 1 {
+		panic("the count param number must be greater than 1")
+	}
+	sql = fmt.Sprintf("DELETE FROM %s", values[0])
+	return
+}
+
+func _count(values ...any) (sql string, vars []any) {
+	if len(values) < 1 {
+		panic("the count param number must be greater than 1")
+	}
+	sql, vars = _select(values[0], []string{"COUNT(0)"})
 	return
 }
