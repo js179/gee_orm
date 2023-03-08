@@ -3,7 +3,6 @@ package dialect
 import (
 	"fmt"
 	"reflect"
-	"strings"
 	"time"
 )
 
@@ -53,8 +52,4 @@ func (m *mysql) DataTypeOf(typ reflect.Value) string {
 func (m *mysql) TableExistSQL(tableName string) (string, []any) {
 	args := []any{tableName}
 	return "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_NAME = ? ", args
-}
-
-func (m *mysql) TableEqual(name1, name2 string) bool {
-	return strings.ToLower(name1) == strings.ToLower(name2)
 }
