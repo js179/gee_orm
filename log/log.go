@@ -17,6 +17,7 @@ var (
 var (
 	Error  = errorLog.Println
 	Errorf = errorLog.Printf
+	Panic  = errorLog.Panic
 	Info   = infoLog.Println
 	Infof  = infoLog.Printf
 )

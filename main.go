@@ -3,6 +3,7 @@ package main
 import (
 	"engine"
 	"logf"
+	"model"
 )
 
 func init() {
@@ -28,4 +29,8 @@ func main() {
 		logf.Error(err)
 	}
 	logf.Info(u)
+
+	sql = sql.Model(model.User{})
+	_ = sql.CreateTable()
+	logf.Infof("has table %v", sql.HasTable())
 }

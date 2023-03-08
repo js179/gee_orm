@@ -2,13 +2,15 @@ package engine
 
 import (
 	"database/sql"
+	"dialect"
 	_ "github.com/go-sql-driver/mysql"
 	"logf"
 	"session"
 )
 
 type Engine struct {
-	db *sql.DB
+	db      *sql.DB
+	dialect dialect.Dialect
 }
 
 func Open(driver, source string) (e *Engine, err error) {
@@ -24,7 +26,13 @@ func Open(driver, source string) (e *Engine, err error) {
 		return
 	}
 
-	e = &Engine{db: db}
+	dial, ok := dialect.GetDialect(driver)
+	if !ok {
+		logf.Error("dialect %s not found", driver)
+		return
+	}
+
+	e = &Engine{db: db, dialect: dial}
 	logf.Info("database connect success")
 	return
 }
@@ -37,5 +45,5 @@ func (e *Engine) Close() {
 }
 
 func (e *Engine) NewSession() *session.Session {
-	return session.New(e.db)
+	return session.New(e.db, e.dialect)
 }
