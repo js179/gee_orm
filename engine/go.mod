@@ -3,6 +3,7 @@ module engine
 go 1.20
 
 replace (
+	clause v1.0.0 => ../clause
 	dialect v1.0.0 => ../dialect
 	logf v1.0.0 => ../log
 	model v1.0.0 => ../model
@@ -17,4 +18,7 @@ require (
 	session v1.0.0
 )
 
-require schema v1.0.0 // indirect
+require (
+	clause v1.0.0 //indirect
+	schema v1.0.0 // indirect
+)

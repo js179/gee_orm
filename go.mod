@@ -3,6 +3,7 @@ module gee_orm
 go 1.20
 
 replace (
+	clause v1.0.0 => ./clause
 	dialect v1.0.0 => ./dialect
 	engine v1.0.0 => ./engine
 	logf v1.0.0 => ./log
@@ -18,6 +19,7 @@ require (
 )
 
 require (
+	clause v1.0.0 // indirect
 	dialect v1.0.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	schema v1.0.0 // indirect
