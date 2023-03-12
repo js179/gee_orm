@@ -38,6 +38,9 @@ func (s *Session) Find(values any) error {
 
 	for rows.Next() {
 		dest := reflect.New(destType).Elem()
+
+		s.CallMethod(AfterQuery, dest.Addr().Interface())
+
 		var values []any
 		for _, name := range table.FieldNames {
 			values = append(values, dest.FieldByName(name).Addr().Interface())

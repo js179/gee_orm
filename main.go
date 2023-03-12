@@ -4,6 +4,7 @@ import (
 	"engine"
 	"logf"
 	"model"
+	"session"
 )
 
 func init() {
@@ -44,15 +45,18 @@ func main() {
 	logf.Infof("val = %#v\n", us2[0])
 	//val = model.User{Id:1, Name:"zs", Age:23}
 
-	//updates := make(map[string]any)
-	//updates["age"] = 25
-	//res, err := sql.Where("name = ?", "zs").Update(updates)
-	//if err == nil {
-	//	logf.Info(res == 1)
-	//	var us3 []model.User
-	//	sql.Where("name = ?", "zs").Find(&us3)
-	//	logf.Infof("val = %v\n", us3[0])
-	//}
+	engine.Transaction(func(sql *session.Session) (any, error) {
+		updates := make(map[string]any)
+		updates["age"] = 25
+		res, err := sql.Where("name = ?", "zs").Update(updates)
+		if err == nil {
+			logf.Info(res == 1)
+			var us3 []model.User
+			sql.Where("name = ?", "zs").Find(&us3)
+			logf.Infof("val = %v\n", us3[0])
+		}
+		return nil, err
+	})
 
 	sql.Where("name = ? or age = ?", "ws", 31).Delete()
 	num, _ := sql.Count()

@@ -13,6 +13,8 @@ type Engine struct {
 	dialect dialect.Dialect
 }
 
+type TxFunc func(*session.Session) (any, error)
+
 func Open(driver, source string) (e *Engine, err error) {
 	db, err := sql.Open(driver, source)
 	if err != nil {
@@ -46,4 +48,25 @@ func (e *Engine) Close() {
 
 func (e *Engine) NewSession() *session.Session {
 	return session.New(e.db, e.dialect)
+}
+
+func (e *Engine) Transaction(f TxFunc) (result any, err error) {
+	s := e.NewSession()
+	if err = s.Begin(); err != nil {
+		logf.Error(err)
+		return nil, err
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			_ = s.RollBack()
+			panic(r)
+		} else if err != nil {
+			_ = s.RollBack()
+		} else {
+			err = s.Commit()
+		}
+	}()
+
+	return f(s)
 }
